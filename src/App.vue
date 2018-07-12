@@ -2,21 +2,19 @@
   <div class="row" id="app">
     <div class="col s1"></div>
     <div class="col s10">
-      <TextBox/>
+      <CurlBox/>
     </div>
     <div class="col s1"></div>
   </div>  
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
-import TextBox from "./components/TextBox";
+import CurlBox from "./components/CurlBox";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
-    TextBox
+    CurlBox
   }
 };
 </script>

@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { from, Subject } from "rxjs";
 
 class Curl {
   constructor() {
@@ -6,6 +7,7 @@ class Curl {
     this.body = "";
     this.url = "";
     this.response = "";
+    this.state = from([""]);
   }
   parse(args) {
     let argsMap = this.retreiveArgs(args);
@@ -22,6 +24,7 @@ class Curl {
   }
 
   retreiveUrl(args) {
+    if (!args || args == undefined) return null;
     return args.match(/(https|http):\/\/[\w]+[.|\w|\/]*/g);
   }
   retreiveHeaders(argsMap) {
@@ -57,23 +60,15 @@ class Curl {
     xmlHttp.send(body);
   }
 
-  doPost() {
-    return `headers: ${JSON.stringify(this.headers)} 
-    body: ${this.body}
-    Url: ${this.url}
-    POST`;
+  doPost(callback) {
+    this.httpCallAsync(this.url, "POST", this.body, callback);
   }
 
-  doGet() {
-    this.httpCallAsync(
-      this.url,
-      "GET",
-      this.body,
-      json => (this.response = json)
-    );
+  doGet(callback) {
+    this.httpCallAsync(this.url, "GET", this.body, callback);
   }
 
-  call(args) {
+  call(args, callback) {
     let argsMap = this.retreiveArgs(args);
     let method = _.toUpper(_.trim(this.retreiveMethod(argsMap)));
     this.headers = this.retreiveHeaders(argsMap);
@@ -82,10 +77,10 @@ class Curl {
 
     switch (method) {
       case "POST":
-        this.doPost();
+        this.doPost(callback);
         break;
       default:
-        this.doGet();
+        this.doGet(callback);
         break;
     }
 
